@@ -34,24 +34,27 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/save_button"
-        android:background="@drawable/rounded_button"
-        android:text="Save"
-        android:textColor="@color/white"
-        android:layout_marginRight="10dp"
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancel_button"
+            android:background="@drawable/rounded_button"
+            android:text="Cancel"
+            android:textColor="@color/white"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/save_button"
+            android:background="@drawable/rounded_button"
+            android:text="Save"
+            android:textColor="@color/white"
+            android:layout_marginRight="10dp"
         />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cancel_button"
-        android:background="@drawable/rounded_button"
-        android:text="Cancel"
-        android:textColor="@color/white"
-        />
+
 
 
     </LinearLayout>

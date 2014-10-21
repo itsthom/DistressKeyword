@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,66 +29,56 @@ public class MainActivity extends Activity {
     private static final int HEARD_CODE = 5678;
     public static final int SETTINGS_RETURN = 8989;
 
-    ImageButton startButton;
-    Button setButton;
+    private TextView speechView;
+    private Dialog match_text_dialog;
+    private ArrayList<String> matches_text;
 
-    TextView speechView;
-    Dialog match_text_dialog;
-    ListView textlist;
-    ArrayList<String> matches_text;
-
-    String distressKeyword = "";
-    String numberToCall = "2345432941";
+    private String distressKeyword = "";
+    private String numberToCall = "2345432941";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startButton = (ImageButton)findViewById(R.id.start_reg);
+        ImageButton startButton = (ImageButton) findViewById(R.id.start_reg);
         speechView = (TextView)findViewById(R.id.speech);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isConnected()){
+                if (isConnected()) {
                     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                     startActivityForResult(intent, HEARD_CODE);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Connect to Internet", Toast.LENGTH_LONG).show();
                 }
-                else{
-                    Toast.makeText(getApplicationContext(), "Plese Connect to Internet", Toast.LENGTH_LONG).show();
-                }}
+            }
         });
 
-        setButton = (Button)findViewById(R.id.set_word_button);
+        Button setButton = (Button) findViewById(R.id.set_word_button);
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isConnected()){
+                if (isConnected()) {
                     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                     startActivityForResult(intent, SET_KEYWORD_CODE);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Connect to Internet", Toast.LENGTH_LONG).show();
                 }
-                else{
-                    Toast.makeText(getApplicationContext(), "Plese Connect to Internet", Toast.LENGTH_LONG).show();
-                }}
+            }
         });
 
-        if (distressKeyword == ""){
-            speechView.setText("Please set keyword!");
-        }
+        if (distressKeyword.isEmpty()) speechView.setText("Please set keyword!");
     }
-    public  boolean isConnected()
-    {
+
+    boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo net = cm.getActiveNetworkInfo();
-        if (net!=null && net.isAvailable() && net.isConnected()) {
-            return true;
-        } else {
-            return false;
-        }
+        return (net != null && net.isAvailable() && net.isConnected());
     }
 
     @Override
@@ -104,7 +91,7 @@ public class MainActivity extends Activity {
                 match_text_dialog = new Dialog(MainActivity.this);
                 match_text_dialog.setContentView(R.layout.matches_fragment);
                 match_text_dialog.setTitle("Select Matching Text");
-                textlist = (ListView) match_text_dialog.findViewById(R.id.list);
+                ListView textlist = (ListView) match_text_dialog.findViewById(R.id.list);
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                         android.R.layout.simple_list_item_1, matches_text);
@@ -124,18 +111,16 @@ public class MainActivity extends Activity {
             } else if (requestCode == HEARD_CODE) {
                 matches_text = data
                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                for (int i = 0; i < matches_text.size(); i++) {
-                    if (distressKeyword.equals(matches_text.get(i))) {
+                for (String matched_text : matches_text) {
+                    if (distressKeyword.equals(matched_text)) {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
                         intent.setData(Uri.parse("tel:" + numberToCall));
                         startActivity(intent);
                     }
                 }
-            }else if (requestCode == SETTINGS_RETURN){
-
+            } else if (requestCode == SETTINGS_RETURN){
                 Uri number = data.getData();
-                String sNumber = number.getQueryParameter("number");
-                numberToCall = sNumber;
+                numberToCall = number.getQueryParameter("number");
             }
 
         }

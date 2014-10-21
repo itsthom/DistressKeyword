@@ -1,33 +1,15 @@
 package awesome.distresskeyord;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
 
 public class SettingsActivity extends Activity {
 
-    EditText numberToCallEditText;
-    Button saveButton;
-    Button cancelButton;
+    private EditText numberToCallEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +18,8 @@ public class SettingsActivity extends Activity {
 
         numberToCallEditText = (EditText) findViewById(R.id.number_to_call);
 
-        saveButton = (Button) findViewById(R.id.save_button);
-        cancelButton = (Button) findViewById(R.id.cancel_button);
+        Button saveButton = (Button) findViewById(R.id.save_button);
+        Button cancelButton = (Button) findViewById(R.id.cancel_button);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
